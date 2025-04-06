@@ -1,6 +1,4 @@
-import { Link, createFileRoute, useRouter } from "@tanstack/react-router";
-import authClient from "~/lib/auth-client";
-import ThemeToggle from "~/lib/components/ThemeToggle";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Button } from "~/lib/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -16,59 +14,25 @@ function Home() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col gap-4 p-6">
-      <h1 className="text-4xl font-bold">TanStarter</h1>
-      <div className="flex items-center gap-2">
-        This is an unprotected page:
-        <pre className="rounded-md border bg-card p-1 text-card-foreground">
-          routes/index.tsx
-        </pre>
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
+      <div className="max-w-3xl space-y-8">
+        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          Senatoriables
+        </h1>
+
+        <div className="space-y-4">
+          <p className="text-muted-foreground text-xl font-medium sm:text-2xl">
+            Help each other figure out which 2025 Senator to vote for!
+          </p>
+          <p className="text-muted-foreground text-xl font-medium sm:text-2xl">
+            Create groups to share with friends!
+          </p>
+        </div>
+
+        <Button asChild size="lg" className="px-8 py-6 text-lg">
+          <Link to="/groups">Get Started</Link>
+        </Button>
       </div>
-
-      {user ? (
-        <div className="flex flex-col gap-2">
-          <p>Welcome back, {user.name}!</p>
-          <Button type="button" asChild className="w-fit" size="lg">
-            <Link to="/dashboard">Go to Dashboard</Link>
-          </Button>
-          <div>
-            More data:
-            <pre>{JSON.stringify(user, null, 2)}</pre>
-          </div>
-
-          <Button
-            onClick={async () => {
-              await authClient.signOut();
-              await queryClient.invalidateQueries({ queryKey: ["user"] });
-              await router.invalidate();
-            }}
-            type="button"
-            className="w-fit"
-            variant="destructive"
-            size="lg"
-          >
-            Sign out
-          </Button>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-2">
-          <p>You are not signed in.</p>
-          <Button type="button" asChild className="w-fit" size="lg">
-            <Link to="/signin">Sign in</Link>
-          </Button>
-        </div>
-      )}
-
-      <ThemeToggle />
-
-      <a
-        className="text-muted-foreground underline hover:text-foreground"
-        href="https://github.com/dotnize/tanstarter"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        dotnize/tanstarter
-      </a>
     </div>
   );
 }

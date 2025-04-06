@@ -12,9 +12,12 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SigninImport } from './routes/signin'
+import { Route as SandboxImport } from './routes/sandbox'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
+import { Route as mainRouteImport } from './routes/(main)/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as mainGroupsImport } from './routes/(main)/groups'
 
 // Create/Update Routes
 
@@ -24,9 +27,20 @@ const SigninRoute = SigninImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const SandboxRoute = SandboxImport.update({
+  id: '/sandbox',
+  path: '/sandbox',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const DashboardRouteRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const mainRouteRoute = mainRouteImport.update({
+  id: '/(main)',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -42,6 +56,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
+const mainGroupsRoute = mainGroupsImport.update({
+  id: '/groups',
+  path: '/groups',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -53,11 +73,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/(main)': {
+      id: '/(main)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof mainRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/sandbox': {
+      id: '/sandbox'
+      path: '/sandbox'
+      fullPath: '/sandbox'
+      preLoaderRoute: typeof SandboxImport
       parentRoute: typeof rootRoute
     }
     '/signin': {
@@ -66,6 +100,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/signin'
       preLoaderRoute: typeof SigninImport
       parentRoute: typeof rootRoute
+    }
+    '/(main)/groups': {
+      id: '/(main)/groups'
+      path: '/groups'
+      fullPath: '/groups'
+      preLoaderRoute: typeof mainGroupsImport
+      parentRoute: typeof mainRouteImport
     }
     '/dashboard/': {
       id: '/dashboard/'
@@ -78,6 +119,18 @@ declare module '@tanstack/react-router' {
 }
 
 // Create and export the route tree
+
+interface mainRouteRouteChildren {
+  mainGroupsRoute: typeof mainGroupsRoute
+}
+
+const mainRouteRouteChildren: mainRouteRouteChildren = {
+  mainGroupsRoute: mainGroupsRoute,
+}
+
+const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
+  mainRouteRouteChildren,
+)
 
 interface DashboardRouteRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -92,44 +145,69 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 )
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof mainRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/sandbox': typeof SandboxRoute
   '/signin': typeof SigninRoute
+  '/groups': typeof mainGroupsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof mainRouteRouteWithChildren
+  '/sandbox': typeof SandboxRoute
   '/signin': typeof SigninRoute
+  '/groups': typeof mainGroupsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/(main)': typeof mainRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/sandbox': typeof SandboxRoute
   '/signin': typeof SigninRoute
+  '/(main)/groups': typeof mainGroupsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/signin' | '/dashboard/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/sandbox'
+    | '/signin'
+    | '/groups'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signin' | '/dashboard'
-  id: '__root__' | '/' | '/dashboard' | '/signin' | '/dashboard/'
+  to: '/' | '/sandbox' | '/signin' | '/groups' | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/(main)'
+    | '/dashboard'
+    | '/sandbox'
+    | '/signin'
+    | '/(main)/groups'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  mainRouteRoute: typeof mainRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  SandboxRoute: typeof SandboxRoute
   SigninRoute: typeof SigninRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  mainRouteRoute: mainRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  SandboxRoute: SandboxRoute,
   SigninRoute: SigninRoute,
 }
 
@@ -144,12 +222,20 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/(main)",
         "/dashboard",
+        "/sandbox",
         "/signin"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/(main)": {
+      "filePath": "(main)/route.tsx",
+      "children": [
+        "/(main)/groups"
+      ]
     },
     "/dashboard": {
       "filePath": "dashboard/route.tsx",
@@ -157,8 +243,15 @@ export const routeTree = rootRoute
         "/dashboard/"
       ]
     },
+    "/sandbox": {
+      "filePath": "sandbox.tsx"
+    },
     "/signin": {
       "filePath": "signin.tsx"
+    },
+    "/(main)/groups": {
+      "filePath": "(main)/groups.tsx",
+      "parent": "/(main)"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",

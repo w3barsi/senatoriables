@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "~/lib/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -9,10 +9,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { queryClient } = Route.useRouteContext();
-  const { user } = Route.useLoaderData();
-  const router = useRouter();
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
       <div className="max-w-3xl space-y-8">
@@ -30,7 +26,7 @@ function Home() {
         </div>
 
         <Button asChild size="lg" className="px-8 py-6 text-lg">
-          <Link to="/groups">Get Started</Link>
+          <Link to="/getStarted">Get Started</Link>
         </Button>
       </div>
     </div>

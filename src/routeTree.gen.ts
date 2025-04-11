@@ -13,11 +13,14 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as SigninImport } from './routes/signin'
 import { Route as SandboxImport } from './routes/sandbox'
+import { Route as GetStartedImport } from './routes/getStarted'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as mainRouteImport } from './routes/(main)/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as mainGroupsImport } from './routes/(main)/groups'
+import { Route as mainSenatorsImport } from './routes/(main)/senators'
+import { Route as mainMeImport } from './routes/(main)/$me'
+import { Route as mainVoteSenatorNameImport } from './routes/(main)/vote.$senatorName'
 
 // Create/Update Routes
 
@@ -30,6 +33,12 @@ const SigninRoute = SigninImport.update({
 const SandboxRoute = SandboxImport.update({
   id: '/sandbox',
   path: '/sandbox',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GetStartedRoute = GetStartedImport.update({
+  id: '/getStarted',
+  path: '/getStarted',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -56,9 +65,21 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-const mainGroupsRoute = mainGroupsImport.update({
-  id: '/groups',
-  path: '/groups',
+const mainSenatorsRoute = mainSenatorsImport.update({
+  id: '/senators',
+  path: '/senators',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+
+const mainMeRoute = mainMeImport.update({
+  id: '/$me',
+  path: '/$me',
+  getParentRoute: () => mainRouteRoute,
+} as any)
+
+const mainVoteSenatorNameRoute = mainVoteSenatorNameImport.update({
+  id: '/vote/$senatorName',
+  path: '/vote/$senatorName',
   getParentRoute: () => mainRouteRoute,
 } as any)
 
@@ -87,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRoute
     }
+    '/getStarted': {
+      id: '/getStarted'
+      path: '/getStarted'
+      fullPath: '/getStarted'
+      preLoaderRoute: typeof GetStartedImport
+      parentRoute: typeof rootRoute
+    }
     '/sandbox': {
       id: '/sandbox'
       path: '/sandbox'
@@ -101,11 +129,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SigninImport
       parentRoute: typeof rootRoute
     }
-    '/(main)/groups': {
-      id: '/(main)/groups'
-      path: '/groups'
-      fullPath: '/groups'
-      preLoaderRoute: typeof mainGroupsImport
+    '/(main)/$me': {
+      id: '/(main)/$me'
+      path: '/$me'
+      fullPath: '/$me'
+      preLoaderRoute: typeof mainMeImport
+      parentRoute: typeof mainRouteImport
+    }
+    '/(main)/senators': {
+      id: '/(main)/senators'
+      path: '/senators'
+      fullPath: '/senators'
+      preLoaderRoute: typeof mainSenatorsImport
       parentRoute: typeof mainRouteImport
     }
     '/dashboard/': {
@@ -115,17 +150,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof DashboardRouteImport
     }
+    '/(main)/vote/$senatorName': {
+      id: '/(main)/vote/$senatorName'
+      path: '/vote/$senatorName'
+      fullPath: '/vote/$senatorName'
+      preLoaderRoute: typeof mainVoteSenatorNameImport
+      parentRoute: typeof mainRouteImport
+    }
   }
 }
 
 // Create and export the route tree
 
 interface mainRouteRouteChildren {
-  mainGroupsRoute: typeof mainGroupsRoute
+  mainMeRoute: typeof mainMeRoute
+  mainSenatorsRoute: typeof mainSenatorsRoute
+  mainVoteSenatorNameRoute: typeof mainVoteSenatorNameRoute
 }
 
 const mainRouteRouteChildren: mainRouteRouteChildren = {
-  mainGroupsRoute: mainGroupsRoute,
+  mainMeRoute: mainMeRoute,
+  mainSenatorsRoute: mainSenatorsRoute,
+  mainVoteSenatorNameRoute: mainVoteSenatorNameRoute,
 }
 
 const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
@@ -147,18 +193,24 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof mainRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/getStarted': typeof GetStartedRoute
   '/sandbox': typeof SandboxRoute
   '/signin': typeof SigninRoute
-  '/groups': typeof mainGroupsRoute
+  '/$me': typeof mainMeRoute
+  '/senators': typeof mainSenatorsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/vote/$senatorName': typeof mainVoteSenatorNameRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof mainRouteRouteWithChildren
+  '/getStarted': typeof GetStartedRoute
   '/sandbox': typeof SandboxRoute
   '/signin': typeof SigninRoute
-  '/groups': typeof mainGroupsRoute
+  '/$me': typeof mainMeRoute
+  '/senators': typeof mainSenatorsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/vote/$senatorName': typeof mainVoteSenatorNameRoute
 }
 
 export interface FileRoutesById {
@@ -166,10 +218,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(main)': typeof mainRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
+  '/getStarted': typeof GetStartedRoute
   '/sandbox': typeof SandboxRoute
   '/signin': typeof SigninRoute
-  '/(main)/groups': typeof mainGroupsRoute
+  '/(main)/$me': typeof mainMeRoute
+  '/(main)/senators': typeof mainSenatorsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/(main)/vote/$senatorName': typeof mainVoteSenatorNameRoute
 }
 
 export interface FileRouteTypes {
@@ -177,21 +232,35 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/getStarted'
     | '/sandbox'
     | '/signin'
-    | '/groups'
+    | '/$me'
+    | '/senators'
     | '/dashboard/'
+    | '/vote/$senatorName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sandbox' | '/signin' | '/groups' | '/dashboard'
+  to:
+    | '/'
+    | '/getStarted'
+    | '/sandbox'
+    | '/signin'
+    | '/$me'
+    | '/senators'
+    | '/dashboard'
+    | '/vote/$senatorName'
   id:
     | '__root__'
     | '/'
     | '/(main)'
     | '/dashboard'
+    | '/getStarted'
     | '/sandbox'
     | '/signin'
-    | '/(main)/groups'
+    | '/(main)/$me'
+    | '/(main)/senators'
     | '/dashboard/'
+    | '/(main)/vote/$senatorName'
   fileRoutesById: FileRoutesById
 }
 
@@ -199,6 +268,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   mainRouteRoute: typeof mainRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  GetStartedRoute: typeof GetStartedRoute
   SandboxRoute: typeof SandboxRoute
   SigninRoute: typeof SigninRoute
 }
@@ -207,6 +277,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   mainRouteRoute: mainRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  GetStartedRoute: GetStartedRoute,
   SandboxRoute: SandboxRoute,
   SigninRoute: SigninRoute,
 }
@@ -224,6 +295,7 @@ export const routeTree = rootRoute
         "/",
         "/(main)",
         "/dashboard",
+        "/getStarted",
         "/sandbox",
         "/signin"
       ]
@@ -234,7 +306,9 @@ export const routeTree = rootRoute
     "/(main)": {
       "filePath": "(main)/route.tsx",
       "children": [
-        "/(main)/groups"
+        "/(main)/$me",
+        "/(main)/senators",
+        "/(main)/vote/$senatorName"
       ]
     },
     "/dashboard": {
@@ -243,19 +317,30 @@ export const routeTree = rootRoute
         "/dashboard/"
       ]
     },
+    "/getStarted": {
+      "filePath": "getStarted.tsx"
+    },
     "/sandbox": {
       "filePath": "sandbox.tsx"
     },
     "/signin": {
       "filePath": "signin.tsx"
     },
-    "/(main)/groups": {
-      "filePath": "(main)/groups.tsx",
+    "/(main)/$me": {
+      "filePath": "(main)/$me.tsx",
+      "parent": "/(main)"
+    },
+    "/(main)/senators": {
+      "filePath": "(main)/senators.tsx",
       "parent": "/(main)"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
+    },
+    "/(main)/vote/$senatorName": {
+      "filePath": "(main)/vote.$senatorName.tsx",
+      "parent": "/(main)"
     }
   }
 }

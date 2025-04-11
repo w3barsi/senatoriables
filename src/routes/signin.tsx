@@ -5,7 +5,7 @@ import { Button } from "~/lib/components/ui/button";
 import { cn } from "~/lib/utils";
 import { AUTH_SVG } from "~/utils/svg";
 
-const REDIRECT_URL = "/dashboard";
+const REDIRECT_URL = "/me";
 
 export const Route = createFileRoute("/signin")({
   component: AuthPage,
@@ -21,8 +21,8 @@ export const Route = createFileRoute("/signin")({
 function AuthPage() {
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-8 rounded-xl border bg-card p-10">
-        Logo here
+      <div className="bg-card flex flex-col items-center gap-8 rounded-xl border p-10">
+        <h1 className="text-xl font-bold">Senatioriables</h1>
         <div className="flex flex-col gap-2">
           <SignInButton provider="google" label="Google" className="" />
           <SignInButton provider="facebook" label="Facebook" className="" />
@@ -54,7 +54,7 @@ function SignInButton({ provider, label, className, ...props }: SignInButtonProp
       type="button"
       size="lg"
       className={cn(
-        "bg-white hover:bg-neutral-200 text-neutral-900 hover:text-black cursor-pointer",
+        "cursor-pointer bg-white text-neutral-900 hover:bg-neutral-200 hover:text-black",
         className,
       )}
       {...props}

@@ -1,9 +1,13 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 
 import { db } from "./db";
 
 export const auth = betterAuth({
+  advanced: {
+    cookiePrefix: "senatoriables",
+  },
   baseURL: process.env.VITE_BASE_URL,
   database: drizzleAdapter(db, {
     provider: "sqlite",
@@ -24,6 +28,14 @@ export const auth = betterAuth({
     },
   },
 
+  user: {
+    additionalFields: {
+      shortId: {
+        type: "string",
+      },
+    },
+  },
+
   // https://www.better-auth.com/docs/concepts/oauth
   socialProviders: {
     google: {
@@ -40,4 +52,6 @@ export const auth = betterAuth({
   // emailAndPassword: {
   //   enabled: true,
   // },
+
+  plugins: [admin()],
 });

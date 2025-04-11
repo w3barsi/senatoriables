@@ -7,6 +7,7 @@ import reactCompiler from "eslint-plugin-react-compiler";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import drizzle from "eslint-plugin-drizzle";
 
 // TODO: clean up for better composability
 export default tseslint.config(
@@ -56,6 +57,23 @@ export default tseslint.config(
       // "@eslint-react/no-forward-ref": "off",
       // "@eslint-react/no-context-provider": "off",
       // "react-compiler/react-compiler": "warn",
+    },
+  },
+
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    plugins: {
+      drizzle,
+    },
+    rules: {
+      "drizzle/enforce-delete-with-where": [
+        "error",
+        { drizzleObjectName: ["db", "ctx.db"] },
+      ],
+      "drizzle/enforce-update-with-where": [
+        "error",
+        { drizzleObjectName: ["db", "ctx.db"] },
+      ],
     },
   },
 );

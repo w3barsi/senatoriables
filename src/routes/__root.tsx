@@ -43,7 +43,7 @@ export const Route = createRootRouteWithContext<{
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStarter",
+        title: "Senatoriables",
       },
     ],
     links: [{ rel: "stylesheet", href: appCss }],

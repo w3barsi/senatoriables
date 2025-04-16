@@ -16,7 +16,7 @@ export const SENATOR_LIST: Senators[] = [
     id: 2,
     name: "Jerome Adonis",
     party: "Makabayan",
-    coalition: "OnotablePositionisyon ng Bayan",
+    coalition: "Oposisyon ng Bayan",
     notablePosition: "Secretary general of Kilusang Mayo Uno",
     rapplerProfile: "https://www.rappler.com/people/p75592354-jerome-adonis/",
     wikipediaProfile: "https://en.wikipedia.org/wiki/Jerome_Adonis",

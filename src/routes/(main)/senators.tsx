@@ -3,17 +3,16 @@ import { useState } from "react";
 import { Input } from "~/lib/components/ui/input";
 import { Label } from "~/lib/components/ui/label";
 import { SENATOR_LIST } from "~/lib/senators-list";
-import { SenatorCard } from "../-components/senator-cards";
+import { InstructionCard, SenatorCard } from "../-components/senator-cards";
 
 export const Route = createFileRoute("/(main)/senators")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [senators, setSenators] = useState(SENATOR_LIST);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredSenators = senators.filter(
+  const filteredSenators = SENATOR_LIST.filter(
     (senator) =>
       senator.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       senator.party.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -35,6 +34,7 @@ function RouteComponent() {
         />
       </div>
       <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
+        <InstructionCard />
         {filteredSenators.map((sen) => (
           <SenatorCard key={sen.id} sen={sen} />
         ))}

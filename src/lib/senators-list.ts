@@ -1,6 +1,6 @@
-import { Senators } from "~/types/senators";
+import { Senator } from "~/types/senators";
 
-export const SENATOR_LIST: Senators[] = [
+export const SENATOR_LIST: Senator[] = [
   {
     id: 1,
     rapplerProfile: "https://www.rappler.com/people/n12735728-benhur-abalos/",
@@ -399,6 +399,7 @@ export const SENATOR_LIST: Senators[] = [
     wikipediaProfile: "https://en.wikipedia.org/wiki/Wilbert_T._Lee",
     image: "https://t5zaxa3g5l.ufs.sh/f/QxH0f2F0weTdsjjajuDENeLFJCQcAUyzP0pbqS2gluxwf6MH",
     linkName: "WILBERT-T-LEE-(LATER-WITHDREW)",
+    withdrew: true,
   },
   {
     id: 37,
@@ -544,6 +545,7 @@ export const SENATOR_LIST: Senators[] = [
     wikipediaProfile: "https://en.wikipedia.org/wiki/Willie_Ong",
     image: "https://t5zaxa3g5l.ufs.sh/f/QxH0f2F0weTdTxQJSIwtQaUus2ByCFpOlxtjnL180HzTfW79",
     linkName: "WILLIE-ONG-(LATER-WITHDREW)",
+    withdrew: true,
   },
   {
     id: 50,

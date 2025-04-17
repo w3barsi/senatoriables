@@ -1,6 +1,36 @@
+import type { RegisteredRouter, ValidateLinkOptions } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import * as React from "react";
 
 import { cn } from "~/lib/utils";
+
+export type LinkCardProps<
+  TRouter extends RegisteredRouter = RegisteredRouter,
+  TOptions = unknown,
+> = {
+  className: string;
+  children: React.ReactNode;
+  linkOptions: ValidateLinkOptions<TRouter, TOptions>;
+};
+
+function LinkCard<TRouter extends RegisteredRouter, TOptions>(
+  props: LinkCardProps<TRouter, TOptions>,
+): React.ReactNode;
+
+function LinkCard(props: LinkCardProps) {
+  return (
+    <Link
+      data-slot="card"
+      className={cn(
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        props.className,
+      )}
+      {...props.linkOptions}
+    >
+      {props.children}
+    </Link>
+  );
+}
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -76,6 +106,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 export {
+  LinkCard,
   Card,
   CardAction,
   CardContent,

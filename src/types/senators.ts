@@ -1,4 +1,4 @@
-export type Senators = {
+export type Senator = {
   id: number;
   name: string;
   image?: string;
@@ -8,4 +8,5 @@ export type Senators = {
   coalition: string;
   notablePosition: string;
   linkName: string;
+  withdrew?: boolean;
 };

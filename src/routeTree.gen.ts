@@ -20,7 +20,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as mainSenatorsImport } from './routes/(main)/senators'
 import { Route as mainMeImport } from './routes/(main)/$me'
-import { Route as mainVoteSenatorNameImport } from './routes/(main)/vote.$senatorName'
+import { Route as mainVoteSenatorLinkNameImport } from './routes/(main)/vote.$senatorLinkName'
 
 // Create/Update Routes
 
@@ -77,9 +77,9 @@ const mainMeRoute = mainMeImport.update({
   getParentRoute: () => mainRouteRoute,
 } as any)
 
-const mainVoteSenatorNameRoute = mainVoteSenatorNameImport.update({
-  id: '/vote/$senatorName',
-  path: '/vote/$senatorName',
+const mainVoteSenatorLinkNameRoute = mainVoteSenatorLinkNameImport.update({
+  id: '/vote/$senatorLinkName',
+  path: '/vote/$senatorLinkName',
   getParentRoute: () => mainRouteRoute,
 } as any)
 
@@ -150,11 +150,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof DashboardRouteImport
     }
-    '/(main)/vote/$senatorName': {
-      id: '/(main)/vote/$senatorName'
-      path: '/vote/$senatorName'
-      fullPath: '/vote/$senatorName'
-      preLoaderRoute: typeof mainVoteSenatorNameImport
+    '/(main)/vote/$senatorLinkName': {
+      id: '/(main)/vote/$senatorLinkName'
+      path: '/vote/$senatorLinkName'
+      fullPath: '/vote/$senatorLinkName'
+      preLoaderRoute: typeof mainVoteSenatorLinkNameImport
       parentRoute: typeof mainRouteImport
     }
   }
@@ -165,13 +165,13 @@ declare module '@tanstack/react-router' {
 interface mainRouteRouteChildren {
   mainMeRoute: typeof mainMeRoute
   mainSenatorsRoute: typeof mainSenatorsRoute
-  mainVoteSenatorNameRoute: typeof mainVoteSenatorNameRoute
+  mainVoteSenatorLinkNameRoute: typeof mainVoteSenatorLinkNameRoute
 }
 
 const mainRouteRouteChildren: mainRouteRouteChildren = {
   mainMeRoute: mainMeRoute,
   mainSenatorsRoute: mainSenatorsRoute,
-  mainVoteSenatorNameRoute: mainVoteSenatorNameRoute,
+  mainVoteSenatorLinkNameRoute: mainVoteSenatorLinkNameRoute,
 }
 
 const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
@@ -199,7 +199,7 @@ export interface FileRoutesByFullPath {
   '/$me': typeof mainMeRoute
   '/senators': typeof mainSenatorsRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/vote/$senatorName': typeof mainVoteSenatorNameRoute
+  '/vote/$senatorLinkName': typeof mainVoteSenatorLinkNameRoute
 }
 
 export interface FileRoutesByTo {
@@ -210,7 +210,7 @@ export interface FileRoutesByTo {
   '/$me': typeof mainMeRoute
   '/senators': typeof mainSenatorsRoute
   '/dashboard': typeof DashboardIndexRoute
-  '/vote/$senatorName': typeof mainVoteSenatorNameRoute
+  '/vote/$senatorLinkName': typeof mainVoteSenatorLinkNameRoute
 }
 
 export interface FileRoutesById {
@@ -224,7 +224,7 @@ export interface FileRoutesById {
   '/(main)/$me': typeof mainMeRoute
   '/(main)/senators': typeof mainSenatorsRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/(main)/vote/$senatorName': typeof mainVoteSenatorNameRoute
+  '/(main)/vote/$senatorLinkName': typeof mainVoteSenatorLinkNameRoute
 }
 
 export interface FileRouteTypes {
@@ -238,7 +238,7 @@ export interface FileRouteTypes {
     | '/$me'
     | '/senators'
     | '/dashboard/'
-    | '/vote/$senatorName'
+    | '/vote/$senatorLinkName'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -248,7 +248,7 @@ export interface FileRouteTypes {
     | '/$me'
     | '/senators'
     | '/dashboard'
-    | '/vote/$senatorName'
+    | '/vote/$senatorLinkName'
   id:
     | '__root__'
     | '/'
@@ -260,7 +260,7 @@ export interface FileRouteTypes {
     | '/(main)/$me'
     | '/(main)/senators'
     | '/dashboard/'
-    | '/(main)/vote/$senatorName'
+    | '/(main)/vote/$senatorLinkName'
   fileRoutesById: FileRoutesById
 }
 
@@ -308,7 +308,7 @@ export const routeTree = rootRoute
       "children": [
         "/(main)/$me",
         "/(main)/senators",
-        "/(main)/vote/$senatorName"
+        "/(main)/vote/$senatorLinkName"
       ]
     },
     "/dashboard": {
@@ -338,8 +338,8 @@ export const routeTree = rootRoute
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
     },
-    "/(main)/vote/$senatorName": {
-      "filePath": "(main)/vote.$senatorName.tsx",
+    "/(main)/vote/$senatorLinkName": {
+      "filePath": "(main)/vote.$senatorLinkName.tsx",
       "parent": "/(main)"
     }
   }

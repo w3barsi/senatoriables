@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
-
+import { reactStartCookies } from "better-auth/react-start";
 import { db } from "./db";
 
 export const auth = betterAuth({
@@ -24,7 +24,7 @@ export const auth = betterAuth({
   account: {
     accountLinking: {
       enabled: true,
-      trustedProviders: ["google", "facebook"],
+      trustedProviders: ["google", "facebook", "twitter"],
     },
   },
 
@@ -46,6 +46,10 @@ export const auth = betterAuth({
       clientId: process.env.FACEBOOK_CLIENT_ID as string,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
     },
+    twitter: {
+      clientId: process.env.TWITTER_CLIENT_ID as string,
+      clientSecret: process.env.TWITTER_CLIENT_SECRET as string,
+    },
   },
 
   // https://www.better-auth.com/docs/authentication/email-password
@@ -53,5 +57,5 @@ export const auth = betterAuth({
   //   enabled: true,
   // },
 
-  plugins: [admin()],
+  plugins: [admin(), reactStartCookies()],
 });

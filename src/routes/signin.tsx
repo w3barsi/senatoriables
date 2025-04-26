@@ -26,6 +26,7 @@ function AuthPage() {
         <div className="flex flex-col gap-2">
           <SignInButton provider="google" label="Google" className="" />
           <SignInButton provider="facebook" label="Facebook" className="" />
+          <SignInButton provider="twitter" label="Twitter" className="" />
         </div>
       </div>
     </div>
@@ -33,7 +34,7 @@ function AuthPage() {
 }
 
 interface SignInButtonProps extends ComponentProps<typeof Button> {
-  provider: "google" | "facebook";
+  provider: "google" | "facebook" | "twitter";
   label: string;
 }
 
@@ -54,7 +55,7 @@ function SignInButton({ provider, label, className, ...props }: SignInButtonProp
       type="button"
       size="lg"
       className={cn(
-        "cursor-pointer bg-white text-neutral-900 hover:bg-neutral-200 hover:text-black",
+        "bg-background text-foreground cursor-pointer hover:bg-neutral-200 hover:text-black",
         className,
       )}
       {...props}

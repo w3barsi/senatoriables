@@ -14,8 +14,13 @@ import { Senator } from "~/types/senators";
 export function SenatorCard({ sen }: { sen: Senator }) {
   return (
     <LinkCard
-      linkOptions={{ to: "/" }}
-      className="row-span-2 grid grid-rows-subgrid gap-3 py-4 transition-colors hover:border hover:border-black"
+      linkOptions={{
+        to: "/vote/$senatorLinkName",
+        params: {
+          senatorLinkName: sen.linkName,
+        },
+      }}
+      className="row-span-2 grid grid-rows-subgrid gap-3 py-4 transition-colors hover:border hover:border-neutral-500/50"
     >
       <CardHeader>
         <div className="flex items-center gap-4">

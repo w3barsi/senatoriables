@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Input } from "~/lib/components/ui/input";
 import { Label } from "~/lib/components/ui/label";
 import { SENATOR_LIST } from "~/lib/senators-list";
+import { Container } from "../-components/container";
 import { InstructionCard, SenatorCard } from "../-components/senator-cards";
 
 export const Route = createFileRoute("/(main)/senators")({
@@ -20,25 +21,27 @@ function RouteComponent() {
       senator.notablePosition.toLowerCase().includes(searchTerm.toLowerCase()),
   );
   return (
-    <div className="flex w-full flex-col justify-center">
-      <div className="flex justify-end gap-2 pb-4">
-        <Label className="text-nowrap" htmlFor="search">
-          Search Senators
-        </Label>
-        <Input
-          id="search"
-          className="max-w-xl"
-          placeholder="Search senators..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+    <Container className="pt-4">
+      <div className="flex w-full flex-col justify-center">
+        <div className="flex justify-end gap-2 pb-4">
+          <Label className="text-nowrap" htmlFor="search">
+            Search Senators
+          </Label>
+          <Input
+            id="search"
+            className="max-w-xl"
+            placeholder="Search senators..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
+          <InstructionCard />
+          {filteredSenators.map((sen) => (
+            <SenatorCard key={sen.id} sen={sen} />
+          ))}
+        </div>
       </div>
-      <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
-        <InstructionCard />
-        {filteredSenators.map((sen) => (
-          <SenatorCard key={sen.id} sen={sen} />
-        ))}
-      </div>
-    </div>
+    </Container>
   );
 }

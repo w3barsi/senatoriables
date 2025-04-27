@@ -106,7 +106,6 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 export {
-  LinkCard,
   Card,
   CardAction,
   CardContent,
@@ -114,4 +113,5 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
+  LinkCard,
 };

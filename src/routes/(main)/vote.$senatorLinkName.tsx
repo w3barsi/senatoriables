@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ExternalLinkIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useBreakpoint } from "~/hooks/use-media-query";
 import { NotFound } from "~/lib/components/NotFound";
 import {
@@ -14,7 +15,17 @@ import { Button } from "~/lib/components/ui/button";
 import { Card, CardContent } from "~/lib/components/ui/card";
 import { SENATOR_LIST } from "~/lib/senators-list";
 import { Senator } from "~/types/senators";
+import { VoteOptions } from "~/types/ui";
 import { Container } from "../-components/container";
+import { VoteButtons } from "../-components/vote-buttons";
+
+type ReasonType = "positive" | "negative" | "uncertain";
+type Reason = {
+  id: string;
+  text: string;
+  source: string;
+  type: ReasonType;
+};
 
 export const Route = createFileRoute("/(main)/vote/$senatorLinkName")({
   component: RouteComponent,
@@ -30,9 +41,28 @@ function RouteComponent() {
   }
 
   return (
-    <Container className="px-2 pt-4 xl:px-0">
+    <Container className="flex flex-col pt-2">
       {breakpoint ? <SenatorCard sen={sen} /> : <SenatorCardAccordion sen={sen} />}
+      <VoteCard sen={sen} />
     </Container>
+  );
+}
+
+function VoteCard({ sen }: { sen: Senator }) {
+  const [vote, setVote] = useState<VoteOptions>(null);
+  useEffect(() => {
+    console.log(vote);
+  }, [vote]);
+
+  return (
+    <div className="mt-8 space-y-10">
+      <Card className="w-full">
+        <CardContent className="">
+          <h3 className="mb-6 text-center text-xl font-medium">How would you vote?</h3>
+          <VoteButtons vote={vote} setVote={setVote} />
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
@@ -52,51 +82,53 @@ function SenatorCard({ sen }: { sen: Senator }) {
           </Avatar>
         </div>
 
-        <div className="p-6 md:w-2/3">
-          <h1 className="mb-2 text-3xl font-bold">{sen.name}</h1>
+        <div className="flex h-full w-full flex-col px-6 lg:flex-row lg:items-center">
+          <div className="w-full">
+            <h1 className="mb-2 text-3xl font-bold">{sen.name}</h1>
 
-          <div className="mb-4 flex flex-wrap gap-2">
-            {sen.party && <Badge variant="outline">{sen.party}</Badge>}
-            {sen.coalition && <Badge variant="secondary">{sen.coalition}</Badge>}
-          </div>
-
-          {sen.notablePosition && (
-            <div className="mb-4">
-              <h2 className="mb-1 text-lg font-semibold">Notable Position</h2>
-              <p>{sen.notablePosition}</p>
+            <div className="mb-4 flex flex-wrap gap-2">
+              {sen.party && <Badge variant="outline">{sen.party}</Badge>}
+              {sen.coalition && <Badge variant="secondary">{sen.coalition}</Badge>}
             </div>
-          )}
 
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row">
+            {sen.notablePosition && (
+              <div className="mb-4">
+                <h2 className="mb-1 text-lg font-semibold">Notable Position</h2>
+                <p>{sen.notablePosition}</p>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-row gap-2 lg:flex-col">
             {sen.wikipediaProfile && (
-              <a
-                href={sen.wikipediaProfile}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center"
-              >
-                <Button variant="outline">
-                  <ExternalLink size={16} className="mr-2" />
+              <Button variant="outline" className="w-full" asChild>
+                <a
+                  href={sen.wikipediaProfile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center"
+                >
+                  <ExternalLinkIcon size={16} className="mr-2" />
                   Wikipedia Profile
-                </Button>
-              </a>
+                </a>
+              </Button>
             )}
 
             {sen.rapplerProfile && (
-              <a
-                href={sen.rapplerProfile}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center"
+              <Button
+                variant="outline"
+                className="w-full border-red-200 bg-red-50 hover:bg-red-100/70"
+                asChild
               >
-                <Button
-                  variant="outline"
-                  className="border-red-200 bg-red-50 hover:bg-red-100"
+                <a
+                  href={sen.rapplerProfile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center"
                 >
-                  <ExternalLink size={16} className="mr-2" />
+                  <ExternalLinkIcon size={16} className="mr-2" />
                   Rappler Profile
-                </Button>
-              </a>
+                </a>
+              </Button>
             )}
           </div>
         </div>

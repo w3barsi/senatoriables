@@ -21,7 +21,7 @@ function RouteComponent() {
       senator.notablePosition.toLowerCase().includes(searchTerm.toLowerCase()),
   );
   return (
-    <Container className="pt-4">
+    <Container className="pt-2">
       <div className="flex w-full flex-col justify-center">
         <div className="flex justify-end gap-2 pb-4">
           <Label className="text-nowrap" htmlFor="search">

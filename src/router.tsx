@@ -1,36 +1,38 @@
-import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
+import * as TanstackQuery from "~/lib/tanstack-query/root-provider";
 
 import { DefaultCatchBoundary } from "~/lib/components/DefaultCatchBoundary";
 import { NotFound } from "~/lib/components/NotFound";
 import { routeTree } from "./routeTree.gen";
 
 export function createRouter() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        staleTime: 1000 * 60, // 1 minute
-      },
-    },
-  });
-
-  return routerWithQueryClient(
+  const router = routerWithQueryClient(
     createTanStackRouter({
       routeTree,
-      context: { queryClient, user: null },
+      context: {
+        user: null,
+        queryClient: TanstackQuery.getContext().queryClient,
+        trpc: TanstackQuery.getContext().trpc,
+      },
+      scrollRestoration: true,
+      defaultPreloadStaleTime: 0,
       defaultPreload: "intent",
       // react-query will handle data fetching & caching
       // https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#passing-all-loader-events-to-an-external-cache
-      defaultPreloadStaleTime: 0,
       defaultErrorComponent: DefaultCatchBoundary,
       defaultNotFoundComponent: NotFound,
-      scrollRestoration: true,
       defaultStructuralSharing: true,
+
+      Wrap: (props: { children: React.ReactNode }) => {
+        // eslint-disable-next-line @eslint-react/no-context-provider
+        return <TanstackQuery.Provider>{props.children}</TanstackQuery.Provider>;
+      },
     }),
-    queryClient,
+    TanstackQuery.getContext().queryClient,
   );
+
+  return router;
 }
 
 declare module "@tanstack/react-router" {

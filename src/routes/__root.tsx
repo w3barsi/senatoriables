@@ -12,8 +12,10 @@ import { getWebRequest } from "@tanstack/react-start/server";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
+import { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { auth } from "~/lib/server/auth";
 import appCss from "~/lib/styles/app.css?url";
+import { TRPCRouter } from "~/lib/trpc/router";
 
 const getUser = createServerFn({ method: "GET" }).handler(async () => {
   const { headers } = getWebRequest()!;
@@ -22,10 +24,13 @@ const getUser = createServerFn({ method: "GET" }).handler(async () => {
   return session?.user || null;
 });
 
-export const Route = createRootRouteWithContext<{
+interface MyRouterContext {
   queryClient: QueryClient;
+  trpc: TRPCOptionsProxy<TRPCRouter>;
   user: Awaited<ReturnType<typeof getUser>>;
-}>()({
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.fetchQuery({
       queryKey: ["user"],
@@ -55,6 +60,9 @@ function RootComponent() {
   return (
     <RootDocument>
       <Outlet />
+
+      <ReactQueryDevtools buttonPosition="bottom-left" />
+      <TanStackRouterDevtools position="bottom-right" />
     </RootDocument>
   );
 }
@@ -73,12 +81,7 @@ function RootDocument({ children }: { readonly children: React.ReactNode }) {
             localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
             )`}
         </ScriptOnce>
-
         {children}
-
-        <ReactQueryDevtools buttonPosition="bottom-left" />
-        <TanStackRouterDevtools position="bottom-right" />
-
         <Scripts />
       </body>
     </html>

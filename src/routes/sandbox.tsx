@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "~/lib/components/ui/avatar";
 import { Badge } from "~/lib/components/ui/badge";
@@ -8,9 +9,8 @@ import {
   CardTitle,
   LinkCard,
 } from "~/lib/components/ui/card";
-import { SENATOR_LIST } from "~/lib/senators-list";
+import { useTRPC } from "~/lib/trpc/react";
 import { Senator } from "~/types/senators";
-import { OldSenatorCard } from "./-components/senator-cards";
 
 export const Route = createFileRoute("/sandbox")({
   component: RouteComponent,
@@ -19,16 +19,18 @@ export const Route = createFileRoute("/sandbox")({
       throw redirect({ to: "/" });
     }
   },
+  loader: async ({ context }) => {
+    await context.queryClient.prefetchQuery(context.trpc.test.testFn.queryOptions());
+  },
 });
 
 function RouteComponent() {
+  const trpc = useTRPC();
+  const { data, error } = useQuery(trpc.test.testFn.queryOptions());
+  console.log(data, error);
   return (
     <div className="flex w-full items-center justify-center px-6 py-4">
-      <div className="container grid grid-cols-3 gap-2">
-        {SENATOR_LIST.map((sen) => (
-          <OldSenatorCard key={sen.id} sen={sen} />
-        ))}
-      </div>
+      <div className="container grid h-8 grid-cols-3 gap-2 bg-red-200">{data}</div>
     </div>
   );
 }

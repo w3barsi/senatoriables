@@ -41,7 +41,7 @@ function RouteComponent() {
   }
 
   return (
-    <Container className="flex flex-col pt-2">
+    <Container className="flex flex-col gap-4 pt-4">
       {breakpoint ? <SenatorCard sen={sen} /> : <SenatorCardAccordion sen={sen} />}
       <VoteCard sen={sen} />
     </Container>
@@ -55,7 +55,7 @@ function VoteCard({ sen }: { sen: Senator }) {
   }, [vote]);
 
   return (
-    <div className="mt-8 space-y-10">
+    <div className="">
       <Card className="w-full">
         <CardContent className="">
           <h3 className="mb-6 text-center text-xl font-medium">How would you vote?</h3>

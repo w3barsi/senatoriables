@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ExternalLink, ExternalLinkIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useBreakpoint } from "~/hooks/use-media-query";
+import { Suspense, useState } from "react";
 import { NotFound } from "~/lib/components/NotFound";
 import {
   Accordion,
@@ -13,27 +13,37 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/lib/components/ui/avatar"
 import { Badge } from "~/lib/components/ui/badge";
 import { Button } from "~/lib/components/ui/button";
 import { Card, CardContent } from "~/lib/components/ui/card";
-import { SENATOR_LIST } from "~/lib/senators-list";
+import { SENATOR_LIST } from "~/lib/constants/senators-list";
+import { useTRPC } from "~/lib/trpc/react";
 import { Senator } from "~/types/senators";
 import { VoteOptions } from "~/types/ui";
 import { Container } from "../-components/container";
 import { VoteButtons } from "../-components/vote-buttons";
 
-type ReasonType = "positive" | "negative" | "uncertain";
-type Reason = {
-  id: string;
-  text: string;
-  source: string;
-  type: ReasonType;
-};
-
-export const Route = createFileRoute("/(main)/vote/$senatorLinkName")({
+// type ReasonType = "positive" | "negative" | "uncertain";
+// type Reason = {
+//   id: string;
+//   text: string;
+//   source: string;
+//   type: ReasonType;
+// };
+//
+export const Route = createFileRoute("/(main)/$me_/$senatorLinkName")({
   component: RouteComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({ to: "/signin" });
+    }
+  },
+  loader: ({ context, params }) => {
+    context.queryClient.ensureQueryData(
+      context.trpc.wait.waitThree.queryOptions({ name: params.senatorLinkName }),
+    );
+  },
 });
 
 function RouteComponent() {
   const { senatorLinkName } = Route.useParams();
-  const breakpoint = useBreakpoint("md");
   const sen = SENATOR_LIST.find((s) => s.linkName === senatorLinkName);
 
   if (!sen) {
@@ -42,33 +52,43 @@ function RouteComponent() {
 
   return (
     <Container className="flex flex-col gap-4 pt-4">
-      {breakpoint ? <SenatorCard sen={sen} /> : <SenatorCardAccordion sen={sen} />}
+      <SenatorCard sen={sen} />
+      <SenatorCardAccordion sen={sen} />
       <VoteCard sen={sen} />
     </Container>
   );
 }
 
 function VoteCard({ sen }: { sen: Senator }) {
-  const [vote, setVote] = useState<VoteOptions>(null);
-  useEffect(() => {
-    console.log(vote);
-  }, [vote]);
-
   return (
     <div className="">
       <Card className="w-full">
         <CardContent className="">
-          <h3 className="mb-6 text-center text-xl font-medium">How would you vote?</h3>
-          <VoteButtons vote={vote} setVote={setVote} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <VoteCardContent name={sen.linkName} />
+          </Suspense>
         </CardContent>
       </Card>
     </div>
   );
 }
 
+function VoteCardContent({ name }: { name: string }) {
+  const trpc = useTRPC();
+  const { data } = useSuspenseQuery(trpc.wait.waitThree.queryOptions({ name }));
+  const [vote, setVote] = useState<VoteOptions>(null);
+
+  return (
+    <>
+      <h3 className="mb-6 text-center text-xl font-medium">How would you vote?</h3>
+      <VoteButtons vote={vote} setVote={setVote} />
+    </>
+  );
+}
+
 function SenatorCard({ sen }: { sen: Senator }) {
   return (
-    <Card className="w-full overflow-hidden p-4">
+    <Card className="hidden w-full overflow-hidden p-4 lg:inline">
       <CardContent className="flex p-0">
         <div className="flex items-center gap-4">
           <Avatar className="size-48 border">
@@ -139,7 +159,7 @@ function SenatorCard({ sen }: { sen: Senator }) {
 
 function SenatorCardAccordion({ sen }: { sen: Senator }) {
   return (
-    <Card className="w-full overflow-hidden p-0">
+    <Card className="w-full overflow-hidden p-0 lg:hidden">
       <CardContent className="p-0">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="details" className="border-none">

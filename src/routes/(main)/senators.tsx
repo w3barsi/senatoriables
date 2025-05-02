@@ -1,16 +1,26 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Input } from "~/lib/components/ui/input";
 import { Label } from "~/lib/components/ui/label";
-import { SENATOR_LIST } from "~/lib/senators-list";
+import { SENATOR_LIST } from "~/lib/constants/senators-list";
 import { Container } from "../-components/container";
 import { InstructionCard, SenatorCard } from "../-components/senator-cards";
 
 export const Route = createFileRoute("/(main)/senators")({
   component: RouteComponent,
+  beforeLoad: ({ context }) => {
+    if (!context.user) {
+      throw redirect({ to: "/signin" });
+    }
+    return { userId: context.user.shortId };
+  },
+  loader: async ({ context }) => {
+    return { userId: context.userId };
+  },
 });
 
 function RouteComponent() {
+  const { userId } = Route.useLoaderData();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredSenators = SENATOR_LIST.filter(
@@ -38,7 +48,7 @@ function RouteComponent() {
         <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
           <InstructionCard />
           {filteredSenators.map((sen) => (
-            <SenatorCard key={sen.id} sen={sen} />
+            <SenatorCard key={sen.id} sen={sen} me={userId} />
           ))}
         </div>
       </div>

@@ -5,5 +5,6 @@ export const Route = createFileRoute("/(main)/$me")({
 });
 
 function RouteComponent() {
-  return <div></div>;
+  const { me } = Route.useParams();
+  return <div>{me}</div>;
 }

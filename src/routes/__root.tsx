@@ -13,7 +13,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import { auth } from "~/lib/server/auth";
+import { auth } from "~/lib/auth";
 import appCss from "~/lib/styles/app.css?url";
 import { TRPCRouter } from "~/lib/trpc/router";
 
@@ -24,7 +24,7 @@ const getUser = createServerFn({ method: "GET" }).handler(async () => {
   return session?.user || null;
 });
 
-interface MyRouterContext {
+export interface MyRouterContext {
   queryClient: QueryClient;
   trpc: TRPCOptionsProxy<TRPCRouter>;
   user: Awaited<ReturnType<typeof getUser>>;

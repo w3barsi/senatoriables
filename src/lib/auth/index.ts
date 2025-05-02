@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
 import { reactStartCookies } from "better-auth/react-start";
-import { db } from "./db";
+import { db } from "../server/db";
 
 export const auth = betterAuth({
   advanced: {

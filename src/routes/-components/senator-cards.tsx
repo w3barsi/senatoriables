@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "~/lib/components/ui/avatar";
 import { Badge } from "~/lib/components/ui/badge";
 import {
@@ -11,12 +10,13 @@ import {
 } from "~/lib/components/ui/card";
 import { Senator } from "~/types/senators";
 
-export function SenatorCard({ sen }: { sen: Senator }) {
+export function SenatorCard({ sen, me }: { sen: Senator; me: string }) {
   return (
     <LinkCard
       linkOptions={{
-        to: "/vote/$senatorLinkName",
+        to: "/$me/$senatorLinkName",
         params: {
+          me,
           senatorLinkName: sen.linkName,
         },
       }}
@@ -49,50 +49,6 @@ export function SenatorCard({ sen }: { sen: Senator }) {
         </CardDescription>
       </CardContent>
     </LinkCard>
-  );
-}
-
-export function OldSenatorCard({ sen }: { sen: Senator }) {
-  return (
-    <Link
-      to="/vote/$senatorLinkName"
-      params={{ senatorLinkName: sen.linkName }}
-      className="group relative h-48 transition-[z-index] transition-discrete hover:z-1000"
-    >
-      <div className="flex h-48 w-full items-end justify-center rounded-2xl bg-black p-2 text-white transition-[height,scale] group-hover:top-20 group-hover:h-58 group-hover:scale-105 group-hover:rounded-b-xl">
-        Click to set vote!
-      </div>
-      <Card className="absolute top-0 z-20 h-48 w-full gap-3 transition-transform group-group-hover:z-1000 group-hover:scale-104 group-hover:shadow-lg">
-        <CardHeader>
-          <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16 border">
-              <AvatarImage src={sen.image} alt={`Photo of ${sen.name}`} />
-              <AvatarFallback>
-                {sen.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <CardTitle>{sen.name}</CardTitle>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {sen.party ? <Badge variant="outline">{sen.party}</Badge> : null}
-                {sen.coalition ? (
-                  <Badge variant="secondary">{sen.coalition}</Badge>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <CardDescription className="text-sm">
-            <span className="font-medium">Notable Position:</span>{" "}
-            {sen.notablePosition ? sen.notablePosition : "N/A"}
-          </CardDescription>
-        </CardContent>
-      </Card>
-    </Link>
   );
 }
 

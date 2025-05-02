@@ -77,6 +77,15 @@ function Header() {
           >
             Senators List
           </Link>
+          <Link
+            to="/sandbox"
+            className="px-1"
+            activeProps={{
+              className: "bg-black text-white dark:text-black dark:bg-white ",
+            }}
+          >
+            Sandbox
+          </Link>
         </nav>
         <div className="flex items-center gap-2">
           <Link

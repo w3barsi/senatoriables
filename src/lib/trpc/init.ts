@@ -1,5 +1,6 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import pc from "picocolors";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { auth } from "../auth";
@@ -42,7 +43,9 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   const result = await next();
 
   const end = Date.now();
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
+  console.log(
+    `${pc.bgBlue(` [tRPC] `)}${pc.bgRed(pc.black(` ${path} `))} took ${end - start}ms to execute`,
+  );
 
   return result;
 });

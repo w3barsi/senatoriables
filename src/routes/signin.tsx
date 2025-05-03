@@ -5,14 +5,12 @@ import { Button } from "~/lib/components/ui/button";
 import { cn } from "~/lib/utils";
 import { AUTH_SVG } from "~/utils/svg";
 
-const REDIRECT_URL = "/me";
-
 export const Route = createFileRoute("/signin")({
   component: AuthPage,
   beforeLoad: async ({ context }) => {
     if (context.user) {
       throw redirect({
-        to: REDIRECT_URL,
+        to: "/getStarted",
       });
     }
   },
@@ -48,7 +46,7 @@ function SignInButton({ provider, label, className, ...props }: SignInButtonProp
         setClicked(true);
         authClient.signIn.social({
           provider,
-          callbackURL: REDIRECT_URL,
+          callbackURL: "/getStarted",
         });
       }}
       disabled={clicked}

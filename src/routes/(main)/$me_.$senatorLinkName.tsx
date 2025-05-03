@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { NotFound } from "~/lib/components/NotFound";
@@ -24,6 +24,13 @@ export const Route = createFileRoute("/(main)/$me_/$senatorLinkName")({
     if (!context.user) {
       throw redirect({ to: "/signin" });
     }
+  },
+  loader: async ({ context, params }) => {
+    await context.queryClient.ensureQueryData(
+      context.trpc.vote.getSenatorVote.queryOptions({
+        senatorId: params.senatorLinkName,
+      }),
+    );
   },
 });
 
@@ -59,14 +66,14 @@ function VoteCard({ sen }: { sen: Senator }) {
 function VoteCardContent() {
   const { senatorLinkName } = Route.useParams();
   const trpc = useTRPC();
-  const { data } = useQuery(
+  const { data } = useSuspenseQuery(
     trpc.vote.getSenatorVote.queryOptions({ senatorId: senatorLinkName }),
   );
 
   return (
     <>
       <h3 className="mb-6 text-center text-xl font-medium">How would you vote?</h3>
-      <VoteButtons vote={data?.decision || null} senatorLinkName={senatorLinkName} />
+      <VoteButtons vote={data?.decision} senatorLinkName={senatorLinkName} />
     </>
   );
 }

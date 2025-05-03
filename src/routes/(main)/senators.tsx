@@ -9,6 +9,7 @@ import { InstructionCard, SenatorCard } from "../-components/senator-cards";
 export const Route = createFileRoute("/(main)/senators")({
   component: RouteComponent,
   beforeLoad: ({ context }) => {
+    console.log(context.user);
     if (!context.user) {
       throw redirect({ to: "/signin" });
     }

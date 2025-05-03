@@ -31,34 +31,55 @@ export function VoteButtons({
           });
         }
 
+        const qf2 = trpc.vote.getAllVotes.queryFilter();
+        console.log(qf.queryKey);
+
+        await queryClient.cancelQueries(qf2);
+        const previousGetAllState = queryClient.getQueryData(qf2.queryKey);
+
+        if (previousGetAllState && previousSenatorVote) {
+          queryClient.setQueryData(qf2.queryKey, [
+            ...previousGetAllState.filter((vote) => vote.senatorId !== senatorLinkName),
+            { ...previousSenatorVote, decision: sway || null },
+          ]);
+        }
+
         return { previousSenatorVote };
       },
-      onSettled: () => {
-        queryClient.invalidateQueries(trpc.vote.getSenatorVote.queryFilter());
+      onSettled: async () => {
+        if (queryClient.isMutating() === 1) {
+          queryClient.invalidateQueries(trpc.vote.getSenatorVote.queryFilter());
+          queryClient.invalidateQueries(trpc.vote.getAllVotes.queryFilter());
+        }
       },
     }),
   );
 
   return (
-    <div className="flex w-full flex-row gap-2">
-      <TestButton
-        choice="yes"
-        vote={vote}
-        baseColor="green"
-        onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "yes" })}
-      />
-      <TestButton
-        choice="no"
-        vote={vote}
-        baseColor="red"
-        onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "no" })}
-      />
-      <TestButton
-        choice="maybe"
-        vote={vote}
-        baseColor="orange"
-        onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "maybe" })}
-      />
+    <div className="flex w-full flex-col gap-2">
+      <div className="flex w-full flex-col gap-2 lg:flex-row">
+        <TestButton
+          choice="yes"
+          vote={vote}
+          baseColor="green"
+          onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "yes" })}
+        />
+        <TestButton
+          choice="no"
+          vote={vote}
+          baseColor="red"
+          onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "no" })}
+        />
+        <TestButton
+          choice="maybe"
+          vote={vote}
+          baseColor="orange"
+          onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "maybe" })}
+        />
+      </div>
+      <div className="w-full text-center">
+        {vote === null ? "You have not voted yet!" : null}
+      </div>
     </div>
   );
 }

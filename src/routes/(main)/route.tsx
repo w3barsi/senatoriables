@@ -53,7 +53,7 @@ function Header() {
   return (
     <div
       className={cn(
-        "sticky top-0 z-50 flex w-full justify-center px-2 transition-all",
+        "sticky top-0 z-50 flex w-full justify-center px-2 transition-all 2xl:px-0",
         !scrolled && "bg-emphasize",
         scrolled && "from-background/70 to-background/10 bg-linear-to-b from-65% pt-4",
       )}

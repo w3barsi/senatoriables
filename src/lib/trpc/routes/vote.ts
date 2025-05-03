@@ -8,6 +8,7 @@ export const voteRouter = {
   addVote: protectedProcedure
     .input(z.object({ senatorId: z.string(), sway: z.enum(decisionEnum) }))
     .mutation(async ({ ctx, input }) => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await ctx.db
         .insert(vote)
         .values({
@@ -29,13 +30,22 @@ export const voteRouter = {
         .select()
         .from(vote)
         .where(eq(vote.senatorId, input.senatorId));
-      return senVote ? senVote : null;
+      return senVote
+        ? senVote
+        : {
+            id: 0,
+            senatorId: input.senatorId,
+            userId: ctx.session.shortId,
+            decision: null,
+          };
     }),
-  getAllVotes: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db
-      .select()
-      .from(vote)
-      .where(eq(vote.userId, ctx.session.shortId))
-      .orderBy(vote.decision);
-  }),
+  getAllVotes: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db
+        .select()
+        .from(vote)
+        .where(eq(vote.userId, ctx.session.shortId))
+        .orderBy(vote.decision);
+    }),
 } satisfies TRPCRouterRecord;

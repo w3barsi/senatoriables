@@ -3,11 +3,11 @@ import js from "@eslint/js";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 import pluginRouter from "@tanstack/eslint-plugin-router";
 import eslintConfigPrettier from "eslint-config-prettier";
+import drizzle from "eslint-plugin-drizzle";
 import reactCompiler from "eslint-plugin-react-compiler";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import drizzle from "eslint-plugin-drizzle";
 
 // TODO: clean up for better composability
 export default tseslint.config(
@@ -53,6 +53,7 @@ export default tseslint.config(
   {
     rules: {
       // You can override any rules here
+      "@typescript-eslint/no-unused-vars": "warn",
       // "@eslint-react/prefer-read-only-props": "off",
       // "@eslint-react/no-forward-ref": "off",
       // "@eslint-react/no-context-provider": "off",

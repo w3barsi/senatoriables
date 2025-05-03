@@ -1,7 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/getStarted")({
-  component: RouteComponent,
   beforeLoad: async ({ context }) => {
     if (!context.user) {
       throw redirect({ to: "/signin" });
@@ -14,7 +13,3 @@ export const Route = createFileRoute("/getStarted")({
     // https://tanstack.com/router/latest/docs/framework/react/guide/external-data-loading
   },
 });
-
-function RouteComponent() {
-  return <div>Hello "/me"!</div>;
-}

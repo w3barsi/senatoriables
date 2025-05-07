@@ -1,22 +1,25 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import pc from "picocolors";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { auth } from "../auth";
 import { db } from "../server/db";
 
-export async function createContext(opts: CreateNextContextOptions) {
-  const session = await auth.api.getSession({ headers: opts.req.headers });
+export const createContext = async (opts: { headers: Headers; req: Request }) => {
+  const session = await auth.api.getSession({
+    headers: opts.headers,
+  });
 
   return {
     db,
-    session: session?.user || null,
-    opts,
+    session,
+    ...opts,
   };
-}
+};
 
-const t = initTRPC.context<typeof createContext>().create({
+type Context = Awaited<ReturnType<typeof createContext>>;
+
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -50,7 +53,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 export const publicProcedure = t.procedure.use(timingMiddleware);
 
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (ctx.session === null || ctx.session?.id === undefined) {
+  if (ctx.session === null || ctx.session?.user.id === undefined) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({

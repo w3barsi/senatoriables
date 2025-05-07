@@ -14,7 +14,7 @@ export const voteRouter = {
         .values({
           decision: input.sway,
           senatorId: input.senatorId,
-          userId: ctx.session.shortId,
+          userId: ctx.session.user.shortId,
         })
         .onConflictDoUpdate({
           target: [vote.userId, vote.senatorId],
@@ -35,7 +35,7 @@ export const voteRouter = {
         : {
             id: 0,
             senatorId: input.senatorId,
-            userId: ctx.session.shortId,
+            userId: ctx.session.user.shortId,
             decision: null,
           };
     }),
@@ -45,7 +45,7 @@ export const voteRouter = {
       return await ctx.db
         .select()
         .from(vote)
-        .where(eq(vote.userId, ctx.session.shortId))
+        .where(eq(vote.userId, ctx.session.user.shortId))
         .orderBy(vote.decision);
     }),
 } satisfies TRPCRouterRecord;

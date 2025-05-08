@@ -12,8 +12,10 @@ import { getWebRequest } from "@tanstack/react-start/server";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import { auth } from "~/lib/server/auth";
+import { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import appCss from "~/lib/styles/app.css?url";
+import { auth } from "~/server/auth";
+import { TRPCRouter } from "~/server/trpc/router";
 
 const getUser = createServerFn({ method: "GET" }).handler(async () => {
   const { headers } = getWebRequest()!;
@@ -24,6 +26,7 @@ const getUser = createServerFn({ method: "GET" }).handler(async () => {
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
+  trpc: TRPCOptionsProxy<TRPCRouter>;
   user: Awaited<ReturnType<typeof getUser>>;
 }>()({
   beforeLoad: async ({ context }) => {

@@ -5,7 +5,7 @@ import { Button } from "~/lib/components/ui/button";
 import { cn } from "~/lib/utils";
 import { AUTH_SVG } from "~/utils/svg";
 
-const REDIRECT_URL = "/me";
+const REDIRECT_URL = "/getStarted";
 
 export const Route = createFileRoute("/signin")({
   component: AuthPage,

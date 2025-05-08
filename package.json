@@ -46,6 +46,7 @@
     "drizzle-orm": "^0.43.1",
     "lucide-react": "^0.508.0",
     "nanoid": "^5.1.5",
+    "picocolors": "^1.1.1",
     "postgres": "^3.4.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

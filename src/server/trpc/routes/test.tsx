@@ -1,8 +1,8 @@
 import { TRPCRouterRecord } from "@trpc/server";
-import { publicProcedure } from "~/lib/trpc/init";
+import { protectedProcedure } from "~/server/trpc/init";
 
 export const testRouter = {
-  hello: publicProcedure.query(() => {
+  hello: protectedProcedure.query(() => {
     return {
       greeting: `hello from tRPC`,
     };

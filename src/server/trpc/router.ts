@@ -1,4 +1,4 @@
-import { createTRPCRouter } from "~/lib/trpc/init";
+import { createTRPCRouter } from "~/server/trpc/init";
 import { testRouter } from "./routes/test";
 
 export const trpcRouter = createTRPCRouter({

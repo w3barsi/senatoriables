@@ -86,6 +86,9 @@ importers:
       nanoid:
         specifier: ^5.1.5
         version: 5.1.5
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
       postgres:
         specifier: ^3.4.5
         version: 3.4.5

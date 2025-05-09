@@ -34,6 +34,29 @@ export function VoteButtons({
           });
         }
 
+        // FIX: not working when navigating directly to /$me
+        // Potential Solution: use "useQuery" instead of "useSuspenseQuery"
+        // const getAllVotesQF = trpc.vote.getAllVotes.queryFilter({ userId });
+        // await queryClient.cancelQueries(getAllVotesQF);
+        // const previousAllVotes = queryClient.getQueryData(getAllVotesQF.queryKey);
+        // if (previousAllVotes) {
+        //   queryClient.setQueriesData(
+        //     getAllVotesQF,
+        //     previousAllVotes
+        //       .map((v) => {
+        //         if (v.senatorId === senatorLinkName) {
+        //           return {
+        //             ...v,
+        //             decision: sway,
+        //           };
+        //         }
+        //         return v;
+        //       })
+        //       .sort((a, b) => a.id - b.id),
+        //   );
+        // }
+        //
+
         return { previousSenatorVote };
       },
       onSettled: async () => {

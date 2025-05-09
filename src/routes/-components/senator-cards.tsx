@@ -11,13 +11,14 @@ import {
 } from "~/lib/components/ui/card";
 import { Senator } from "~/types/senators";
 
-export function SenatorCard({ sen }: { sen: Senator }) {
+export function SenatorCard({ sen, me }: { sen: Senator; me: string }) {
   return (
     <LinkCard
       linkOptions={{
-        to: "/vote/$senatorLinkName",
+        to: "/$me/$senatorLinkName",
         params: {
           senatorLinkName: sen.linkName,
+          me,
         },
       }}
       className="row-span-2 grid grid-rows-subgrid gap-3 py-4 transition-colors hover:border hover:border-neutral-500/50"

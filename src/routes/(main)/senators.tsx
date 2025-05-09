@@ -11,6 +11,7 @@ export const Route = createFileRoute("/(main)/senators")({
 });
 
 function RouteComponent() {
+  const { user } = Route.useRouteContext();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredSenators = SENATOR_LIST.filter(
@@ -38,7 +39,7 @@ function RouteComponent() {
         <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
           <InstructionCard />
           {filteredSenators.map((sen) => (
-            <SenatorCard key={sen.id} sen={sen} />
+            <SenatorCard key={sen.id} sen={sen} me={user.shortId} />
           ))}
         </div>
       </div>

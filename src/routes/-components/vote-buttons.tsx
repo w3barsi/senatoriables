@@ -1,31 +1,72 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BugIcon, CheckIcon, XIcon } from "lucide-react";
-import { ComponentProps, Dispatch, SetStateAction } from "react";
+import { ComponentProps } from "react";
 import { Button } from "~/lib/components/ui/button";
+import { useTRPC } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
-import { VoteOptions } from "~/types/ui";
+import { DecisionOptions } from "~/types/ui";
 
 export function VoteButtons({
   vote,
-  setVote,
+  senatorLinkName,
+  me,
 }: {
-  vote: VoteOptions;
-  setVote: Dispatch<SetStateAction<VoteOptions>>;
+  vote: DecisionOptions;
+  senatorLinkName: string;
+  me: string;
 }) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { mutateAsync } = useMutation(
+    trpc.vote.addVote.mutationOptions({
+      onMutate: async ({ sway }) => {
+        const getSenatorVoteQF = trpc.vote.getSenatorVote.queryFilter({
+          senatorId: senatorLinkName,
+        });
+
+        await queryClient.cancelQueries(getSenatorVoteQF);
+        const previousSenatorVote = queryClient.getQueryData(getSenatorVoteQF.queryKey);
+
+        if (previousSenatorVote) {
+          queryClient.setQueryData(getSenatorVoteQF.queryKey, {
+            ...previousSenatorVote,
+            decision: sway,
+          });
+        }
+
+        return { previousSenatorVote };
+      },
+      onSettled: async () => {
+        if (queryClient.isMutating() === 1) {
+          queryClient.invalidateQueries(trpc.vote.getSenatorVote.queryFilter());
+          queryClient.invalidateQueries(trpc.vote.getAllVotes.queryFilter());
+        }
+      },
+    }),
+  );
+
   return (
-    <div className="flex w-full flex-row gap-2">
-      <TestButton
-        choice="yes"
-        vote={vote}
-        baseColor="green"
-        onClick={() => setVote("yes")}
-      />
-      <TestButton choice="no" vote={vote} baseColor="red" onClick={() => setVote("no")} />
-      <TestButton
-        choice="maybe"
-        vote={vote}
-        baseColor="orange"
-        onClick={() => setVote("maybe")}
-      />
+    <div className="flex w-full flex-col gap-2">
+      <div className="flex w-full flex-col gap-2 lg:flex-row">
+        <TestButton
+          choice="yes"
+          vote={vote}
+          onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "yes", me })}
+        />
+        <TestButton
+          choice="no"
+          vote={vote}
+          onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "no", me })}
+        />
+        <TestButton
+          choice="maybe"
+          vote={vote}
+          onClick={() => mutateAsync({ senatorId: senatorLinkName, sway: "maybe", me })}
+        />
+      </div>
+      <div className="w-full text-center">
+        {vote === null ? "You have not voted yet!" : null}
+      </div>
     </div>
   );
 }
@@ -50,13 +91,11 @@ const voteVariants = {
 
 function TestButton({
   vote,
-  baseColor,
   choice,
   ...props
 }: ComponentProps<"button"> & {
-  choice: Exclude<VoteOptions, null>;
-  vote: VoteOptions;
-  baseColor: string;
+  choice: Exclude<DecisionOptions, null>;
+  vote: DecisionOptions;
 }) {
   const VoteIcon = voteVariants[choice].icon;
   return (
@@ -72,7 +111,7 @@ function TestButton({
     >
       <span
         className={cn(
-          "flex size-12 items-center justify-center rounded-full bg-(--base-color)/20",
+          "flex size-12 items-center justify-center rounded-full bg-(--base-color)/20 transition-colors",
           choice === vote && "bg-(--base-color)/80 text-white",
         )}
       >

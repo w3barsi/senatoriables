@@ -17,6 +17,7 @@ export const Route = createFileRoute("/(main)")({
     if (!context.user) {
       throw redirect({ to: "/signin" });
     }
+    return { user: context.user };
   },
   loader: ({ context }) => {
     return { user: context.user };

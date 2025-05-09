@@ -1,7 +1,7 @@
 import { TRPCError, TRPCRouterRecord } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
-import { decisionEnum, reasons, vote } from "~/server/db/schema";
+import { decisionEnum, reasonDecisionEnum, reasons, vote } from "~/server/db/schema";
 import { protectedProcedure } from "../init";
 
 export const voteRouter = {
@@ -59,7 +59,7 @@ export const voteRouter = {
     .input(
       z.object({
         senatorId: z.string(),
-        decision: z.string(),
+        decision: z.enum(reasonDecisionEnum),
         reason: z.string(),
         source: z.string(),
       }),

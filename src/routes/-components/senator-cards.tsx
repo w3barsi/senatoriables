@@ -25,15 +25,21 @@ export function SenatorCard({ sen, me }: { sen: Senator; me: string }) {
     >
       <CardHeader>
         <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16 border">
-            <AvatarImage src={sen.image} alt={`Photo of ${sen.name}`} />
-            <AvatarFallback>
-              {sen.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar className="size-16 border">
+              <AvatarImage src={sen.image} alt={`Photo of ${sen.name}`} />
+              <AvatarFallback>
+                {sen.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
+            <span className="bg-background absolute right-0 bottom-0 flex size-6 items-center justify-center rounded-full border border-neutral-800 p-1 text-xs font-bold">
+              {sen.id}
+            </span>
+          </div>
+
           <div>
             <CardTitle>{sen.name}</CardTitle>
             <div className="mt-2 flex flex-wrap gap-2">

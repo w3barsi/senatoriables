@@ -1,6 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { NotFound } from "~/lib/components/NotFound";
 import { CardContent, LinkCard } from "~/lib/components/ui/card";
 import { Separator } from "~/lib/components/ui/separator";
 import { SENATOR_LIST } from "~/lib/senators-list";
@@ -24,92 +23,103 @@ function RouteComponent() {
   const { data } = useSuspenseQuery(
     trpc.vote.getAllVotes.queryOptions({ userId: params.me }),
   );
-  const yesses = data.filter((v) => v.decision === "yes");
-  const nos = data.filter((v) => v.decision === "no");
-  const maybes = data.filter((v) => v.decision === "maybe");
+  // sort by id
+  const yesses = data
+    .filter((v) => v.decision === "yes")
+    .map((v) => SENATOR_LIST.find((s) => s.linkName === v.senatorId))
+    .sort((a, b) => a?.id - b?.id);
 
-  console.log("rerender");
+  const nos = data
+    .filter((v) => v.decision === "no")
+    .map((v) => SENATOR_LIST.find((s) => s.linkName === v.senatorId))
+    .sort((a, b) => a?.id - b?.id);
+
+  const maybes = data
+    .filter((v) => v.decision === "maybe")
+    .map((v) => SENATOR_LIST.find((s) => s.linkName === v.senatorId))
+    .sort((a, b) => a?.id - b?.id);
 
   return (
-    <Container className="flex flex-col gap-4 pt-4">
-      <h3 className="text-xl font-bold">Will Vote</h3>
-      <div className="flex w-full flex-col gap-2 md:grid md:grid-cols-2">
-        {yesses?.map((vote, idx) => {
-          const sen = SENATOR_LIST.find((s) => s.linkName === vote.senatorId);
-          if (!sen) {
-            return <NotFound key={idx} />;
-          }
-          return (
-            <LinkCard
-              linkOptions={{
-                to: "/$me/$senatorLinkName",
-                params: { senatorLinkName: sen.linkName, me: userId },
-              }}
-              className={cn("w-full border-green-800 py-4")}
-              key={sen.id}
-            >
-              <CardContent className="flex items-center gap-4">
-                <img src={sen.image} alt="" className="h-12 w-12 rounded-full" />
+    <Container className="flex flex-col py-4">
+      <div className={cn("flex flex-col gap-4", yesses.length === 0 && "hidden")}>
+        <h3 className="text-xl font-bold">Will Vote</h3>
+        <div className="flex w-full flex-col gap-2 md:grid md:grid-cols-2">
+          {yesses?.map((sen, idx) => {
+            if (sen) {
+              return (
+                <LinkCard
+                  linkOptions={{
+                    to: "/$me/$senatorLinkName",
+                    params: { senatorLinkName: sen.linkName, me: userId },
+                  }}
+                  className={cn("w-full border-green-800 py-4")}
+                  key={sen.id}
+                >
+                  <CardContent className="flex items-center gap-4">
+                    <img src={sen.image} alt="" className="h-12 w-12 rounded-full" />
 
-                <p className="font-semibold">{sen.id}</p>
-                <p>{sen.name}</p>
-              </CardContent>
-            </LinkCard>
-          );
-        })}
+                    <p className="font-semibold">{sen.id}</p>
+                    <p>{sen.name}</p>
+                  </CardContent>
+                </LinkCard>
+              );
+            }
+          })}
+        </div>
       </div>
 
-      <Separator />
+      <Separator className={cn("mt-5 mb-3", maybes.length === 0 && "hidden")} />
 
-      <h3 className="text-xl font-bold">Might Vote</h3>
-      <div className="flex w-full flex-col gap-2 md:grid md:grid-cols-2">
-        {maybes?.map((vote, idx) => {
-          const sen = SENATOR_LIST.find((s) => s.linkName === vote.senatorId);
-          if (!sen) {
-            return <NotFound key={idx} />;
-          }
-          return (
-            <LinkCard
-              linkOptions={{
-                to: "/$me/$senatorLinkName",
-                params: { senatorLinkName: sen.linkName, me: userId },
-              }}
-              className={cn("w-full border-orange-300 py-4")}
-              key={sen.id}
-            >
-              <CardContent className="flex items-center gap-4">
-                <img src={sen.image} alt="" className="h-12 w-12 rounded-full" />
-                <p>{sen.name}</p>
-              </CardContent>
-            </LinkCard>
-          );
-        })}
+      <div className={cn("flex flex-col gap-4", maybes.length === 0 && "hidden")}>
+        <h3 className="text-xl font-bold">Might Vote</h3>
+        <div className="flex w-full flex-col gap-2 md:grid md:grid-cols-2">
+          {maybes?.map((sen) => {
+            if (sen) {
+              return (
+                <LinkCard
+                  linkOptions={{
+                    to: "/$me/$senatorLinkName",
+                    params: { senatorLinkName: sen.linkName, me: userId },
+                  }}
+                  className={cn("w-full border-orange-300 py-4")}
+                  key={sen.id}
+                >
+                  <CardContent className="flex items-center gap-4">
+                    <img src={sen.image} alt="" className="h-12 w-12 rounded-full" />
+                    <p>{sen.name}</p>
+                  </CardContent>
+                </LinkCard>
+              );
+            }
+          })}
+        </div>
       </div>
 
-      <Separator />
-      <h3 className="text-xl font-bold">Wont Vote</h3>
-      <div className="flex w-full flex-col gap-2 md:grid md:grid-cols-2">
-        {nos?.map((vote, idx) => {
-          const sen = SENATOR_LIST.find((s) => s.linkName === vote.senatorId);
-          if (!sen) {
-            return <NotFound key={idx} />;
-          }
-          return (
-            <LinkCard
-              linkOptions={{
-                to: "/$me/$senatorLinkName",
-                params: { senatorLinkName: sen.linkName, me: userId },
-              }}
-              className={cn("w-full border-red-800 py-4")}
-              key={sen.id}
-            >
-              <CardContent className="flex items-center gap-4">
-                <img src={sen.image} alt="" className="h-12 w-12 rounded-full" />
-                <p>{sen.name}</p>
-              </CardContent>
-            </LinkCard>
-          );
-        })}
+      <Separator className={cn("mt-5 mb-3", nos.length === 0 && "hidden")} />
+
+      <div className={cn("flex flex-col gap-4", nos.length === 0 && "hidden")}>
+        <h3 className="text-xl font-bold">Wont Vote</h3>
+        <div className="flex w-full flex-col gap-2 md:grid md:grid-cols-2">
+          {nos?.map((sen, idx) => {
+            if (sen) {
+              return (
+                <LinkCard
+                  linkOptions={{
+                    to: "/$me/$senatorLinkName",
+                    params: { senatorLinkName: sen.linkName, me: userId },
+                  }}
+                  className={cn("w-full border-red-800 py-4")}
+                  key={sen.id}
+                >
+                  <CardContent className="flex items-center gap-4">
+                    <img src={sen.image} alt="" className="h-12 w-12 rounded-full" />
+                    <p>{sen.name}</p>
+                  </CardContent>
+                </LinkCard>
+              );
+            }
+          })}
+        </div>
       </div>
     </Container>
   );

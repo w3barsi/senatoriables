@@ -54,15 +54,15 @@ function Header() {
   return (
     <div
       className={cn(
-        "sticky top-0 z-50 flex w-full justify-center px-2 transition-all",
+        "sticky top-0 z-50 flex w-full justify-center px-2 transition-all xl:px-0",
         !scrolled && "bg-emphasize",
         scrolled && "from-background/70 to-background/10 bg-linear-to-b from-65% pt-4",
       )}
     >
       <header
         className={cn(
-          "container flex h-14 w-full items-center justify-between",
-          scrolled ? "bg-emphasize rounded-full border pr-4 pl-6" : "",
+          "container flex h-14 items-center justify-between",
+          scrolled ? "bg-emphasize rounded-full border pl-6" : "",
         )}
       >
         <nav className="flex items-center gap-4">

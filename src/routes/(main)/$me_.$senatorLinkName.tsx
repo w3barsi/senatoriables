@@ -57,7 +57,7 @@ function RouteComponent() {
   }
 
   return (
-    <Container className="flex flex-col gap-4 p-4">
+    <Container className="flex flex-col gap-4 pt-4">
       <MeSenatorCard sen={sen} />
       <MeSenatorCardAccordion sen={sen} />
       <VoteCard />

@@ -19,15 +19,20 @@ export function MeSenatorCardAccordion({ sen }: { sen: Senator }) {
           <AccordionItem value="details" className="border-none">
             <AccordionTrigger className="flex flex-col items-center py-4 hover:no-underline">
               <div className="flex flex-col items-center gap-4">
-                <Avatar className="size-32 border">
-                  <AvatarImage src={sen.image} alt={`Photo of ${sen.name}`} />
-                  <AvatarFallback>
-                    {sen.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative flex items-center gap-4">
+                  <Avatar className="size-48 border">
+                    <AvatarImage src={sen.image} alt={`Photo of ${sen.name}`} />
+                    <AvatarFallback>
+                      {sen.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="bg-background absolute right-0 bottom-0 flex size-12 items-center justify-center rounded-full border border-neutral-800 p-1 font-bold">
+                    {sen.id}
+                  </span>
+                </div>
                 <h2 className="text-center text-2xl font-bold">{sen.name}</h2>
               </div>
             </AccordionTrigger>

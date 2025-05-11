@@ -9,7 +9,7 @@ export function MeSenatorCard({ sen }: { sen: Senator }) {
   return (
     <Card className="hidden w-full overflow-hidden p-4 lg:inline">
       <CardContent className="flex p-0">
-        <div className="flex items-center gap-4">
+        <div className="relative flex items-center gap-4">
           <Avatar className="size-48 border">
             <AvatarImage src={sen.image} alt={`Photo of ${sen.name}`} />
             <AvatarFallback>
@@ -19,6 +19,9 @@ export function MeSenatorCard({ sen }: { sen: Senator }) {
                 .join("")}
             </AvatarFallback>
           </Avatar>
+          <span className="bg-background absolute right-0 bottom-0 flex size-12 items-center justify-center rounded-full border border-neutral-800 p-1 font-bold">
+            {sen.id}
+          </span>
         </div>
 
         <div className="flex h-full w-full flex-col px-6 lg:flex-row lg:items-center">

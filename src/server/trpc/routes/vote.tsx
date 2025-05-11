@@ -10,6 +10,8 @@ export const voteRouter = {
       z.object({ senatorId: z.string(), sway: z.enum(decisionEnum), me: z.string() }),
     )
     .mutation(async ({ ctx, input }) => {
+      //wait
+      new Promise((res) => setTimeout(res, 2000));
       if (ctx.session.user.shortId !== input.me) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
